@@ -60,7 +60,8 @@ class DifferentialLine(object):
     self.num = 0
 
     # nz = int(1.0/(2*self.far_rad))
-    nz = int(5)
+    nz = int(1)
+
     self.nz = nz
     self.nz2 = nz**2
     nmax = self.nmax
@@ -68,7 +69,7 @@ class DifferentialLine(object):
     self.xy = zeros((nmax, 2), npfloat)
     self.dxy = zeros((nmax, 2), npfloat)
     self.tmp = zeros((nmax, 1), npfloat)
-    self.link_len = zeros((nmax, 2), npfloat)
+    self.link_len = zeros((2*nmax, 1), npfloat)
     self.links = zeros((2*nmax, 1), npint)
 
     self.zone_num = zeros(self.nz2, npint)
@@ -139,10 +140,10 @@ class DifferentialLine(object):
     for i in mask:
       # a = links[2*i]
       b = links[2*i+1,0]
+
       l = link_len[2*i+1,0]
-      ln = norm(xy[i,:]-xy[b,:])
-      print(l, ln)
-      if ln>limit:
+      # ln = norm(xy[i,:]-xy[b,:])
+      if l>limit:
 
         newxy = (xy[b,:]+xy[i,:])*0.5
         xy[num,:] = newxy
@@ -153,8 +154,8 @@ class DifferentialLine(object):
         links[2*b] = num
         num += 1
 
-    # for i in xrange(num):
-      # print(i, links[2*i: 2*i+2].flatten())
+    # for i in xrange(self.num):
+      # print(i, links[2*i: 2*i+2].flatten(), link_len[2*i: 2*i+2].flatten())
 
     self.num = num
 
@@ -197,7 +198,7 @@ class DifferentialLine(object):
       drv.In(xy[:num,:]),
       drv.Out(dxy[:num,:]),
       drv.Out(tmp[:num,:]),
-      drv.Out(link_len[:num,:]),
+      drv.Out(link_len[:num*2,:]),
       drv.In(self.links[:num*2,:]),
       drv.In(self.zone_num),
       drv.In(self.zone_node),

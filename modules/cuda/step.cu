@@ -52,11 +52,12 @@ __global__ void step(
       zk = a*nz+b;
       for (int k=0;k<zone_num[zk];k++){
 
+        j = zone_node[zk*zone_leap+k];
+
         if ((i==j) || (j == links[ii]) || (j == links[ii+1])){
           continue;
         }
 
-        j = zone_node[zk*zone_leap+k];
         jj = 2*j;
         total_count += 1;
         dx = xy[ii] - xy[jj];
@@ -88,8 +89,9 @@ __global__ void step(
   }
 
   for (int k=0;k<2;k++){
-    dx = xy[ii] - xy[2*links[ii+k]];
-    dy = xy[ii+1] - xy[2*links[ii+k]+1];
+    j = links[ii+k];
+    dx = xy[ii] - xy[2*j];
+    dy = xy[ii+1] - xy[2*j+1];
     dd = sqrt(dx*dx + dy*dy);
     link_len[ii+k] = dd;
     if (dd>near_rad){
