@@ -213,8 +213,7 @@ class DifferentialLine(object):
     if t:
       t.t('kern2')
 
-    print(mean(dxy[:num,:], axis=0))
-    print(tmp[:num].flatten().max())
+    assert tmp[:num].flatten().max()<self.zone_leap
 
     xy[:num,:] += dxy[:num,:]
 

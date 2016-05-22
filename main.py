@@ -12,9 +12,10 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
   from numpy import pi
   from fn import Fn
   from modules.timers import named_sub_timers
+  from time import time
   # from dddUtils.ioOBJ import export_2d as export
 
-
+  t0 = time()
   t = named_sub_timers('dl')
   t = None
 
@@ -30,14 +31,14 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
     if dl.itt % render_steps == 0:
 
-      print('itt', dl.itt, 'num', dl.num)
+      print('itt', dl.itt, 'num', dl.num, 'time', time()-t0)
       if t:
         t.p()
 
       num = dl.num
 
       render.clear_canvas()
-      render.set_line_width(dl.one)
+      render.set_line_width(2*dl.one)
 
       xy = dl.xy[:num,:]
       links = dl.links[:2*num,0]
@@ -83,7 +84,7 @@ def main():
   render_steps = 10
   export_steps = 200
 
-  size = 1024
+  size = 1500
   one = 1.0/size
 
   init_num = 40
