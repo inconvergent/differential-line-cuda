@@ -9,31 +9,22 @@ from __future__ import division
 
 def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
-  from numpy import pi
   from fn import Fn
-  from modules.timers import named_sub_timers
   from time import time
   # from dddUtils.ioOBJ import export_2d as export
 
   t0 = time()
-  t = named_sub_timers('dl')
-  t = None
 
   fn = Fn(prefix='./res/')
 
   def wrap(render):
 
-    dl.step(t)
-    dl.spawn(limit=limit, prob=prob, t=t)
-
-    if t:
-      t.t('spwn')
+    dl.step()
+    dl.spawn(limit=limit, prob=prob)
 
     if dl.itt % render_steps == 0:
 
       print('itt', dl.itt, 'num', dl.num, 'time', time()-t0)
-      if t:
-        t.p()
 
       num = dl.num
 
@@ -67,7 +58,6 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
 def main():
 
-  from numpy import array
   from modules.differentialLine import DifferentialLine
   from render.render import Animate
 
@@ -78,12 +68,12 @@ def main():
     'light': [0,0,0,0.2],
   }
 
-  threads = 256
+  threads = 512
 
-  render_steps = 10
-  export_steps = 50
+  render_steps = 100
+  export_steps = 100
 
-  size = 1024
+  size = 1024*4
   one = 1.0/size
 
   init_num = 40
@@ -91,13 +81,13 @@ def main():
 
   stp = one*0.5
   spring_stp = 1.0
-  reject_stp = 2.0
+  reject_stp = 10.0
 
-  spawn_limit = 1.5*one
-  spawn_prob = 0.3
+  near_rad = one*1.3
+  far_rad = 50.*one
 
-  near_rad = one
-  far_rad = 30.*one
+  spawn_limit = near_rad*2.
+  spawn_prob = 0.14
 
   DL = DifferentialLine(
     size,

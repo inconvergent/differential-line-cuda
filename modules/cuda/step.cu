@@ -8,6 +8,7 @@ __global__ void step(
   float *dxy,
   float *tmp,
   float *link_len,
+  float *link_curv,
   int *links,
   int *zone_num,
   int *zone_node,

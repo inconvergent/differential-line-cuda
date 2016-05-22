@@ -63,6 +63,7 @@ class DifferentialLine(object):
     self.dxy = zeros((nmax, 2), npfloat)
     self.tmp = zeros((nmax, 1), npfloat)
     self.link_len = zeros((2*nmax, 1), npfloat)
+    self.link_curv = zeros((2*nmax, 1), npfloat)
     self.links = zeros((2*nmax, 1), npint)
 
     zone_map_size = self.nz2*64
@@ -158,9 +159,8 @@ class DifferentialLine(object):
 
     self.num = num
 
-  # def spawn_curl(df, limit, prob_spawn=1.0):
+  # def spawn_curl(df, limit, prob=1.0):
 
-    # enum = df.get_enum()
     # ind_curv = {}
     # tot_curv = 0
     # max_curv = -100000
@@ -197,6 +197,7 @@ class DifferentialLine(object):
     dxy = self.dxy
     tmp = self.tmp
     link_len = self.link_len
+    link_curv = self.link_curv
     blocks = num//self.threads + 1
 
     self.zone_num[:] = 0
@@ -238,6 +239,7 @@ class DifferentialLine(object):
       drv.Out(dxy[:num,:]),
       drv.Out(tmp[:num,:]),
       drv.Out(link_len[:num*2,:]),
+      drv.Out(link_curv[:num*2,:]),
       drv.In(self.links[:num*2,:]),
       drv.In(self.zone_num),
       drv.In(self.zone_node),
