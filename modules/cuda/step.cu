@@ -88,9 +88,7 @@ __global__ void step(
     }
   }
 
-  // curl
-
-
+  // curl (not really the curl)
   float ax = xy[ii] - xy[2*links[ii]];
   float ay = xy[ii+1] - xy[2*links[ii]+1];
   dd = sqrt(ax*ax+ay*ay);
@@ -104,11 +102,11 @@ __global__ void step(
   by/=dd;
 
   link_curv[ii+1] = abs(ax*bx + ay*by);
+  link_curv[ii] = abs(ax*bx + ay*by);
 
+  // persist
   dxy[ii] = sx*stp;
   dxy[ii+1] = sy*stp;
-
-  tmp[i] = (float)cand_count;
 
 }
 

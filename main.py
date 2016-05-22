@@ -38,7 +38,7 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       render.ctx.set_source_rgba(*colors['front'])
 
       for x,y in xy:
-        render.circle(x, y, dl.one*3, fill=True)
+        render.circle(x, y, dl.one, fill=True)
 
       # for i in xrange(num):
         # # a = links[2*i]

@@ -164,11 +164,12 @@ class DifferentialLine(object):
     xy = self.xy
     num = self.num
 
-    for i, (r, t) in enumerate(zip(random(num), self.link_curv[1::2, 0])):
+    curve = sqrt(self.link_curv[1:2*num:2,0])
+    for i, (r, t) in enumerate(zip(random(num), curve)):
 
       b = links[2*i+1,0]
 
-      if r>sqrt(t) and link_len[2*i+1,0]>limit:
+      if r>t and link_len[2*i+1,0]>limit:
 
         newxy = (xy[b,:]+xy[i,:])*0.5
         xy[num,:] = newxy
