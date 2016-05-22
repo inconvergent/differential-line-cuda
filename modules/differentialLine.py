@@ -158,6 +158,34 @@ class DifferentialLine(object):
 
     self.num = num
 
+  # def spawn_curl(df, limit, prob_spawn=1.0):
+
+    # enum = df.get_enum()
+    # ind_curv = {}
+    # tot_curv = 0
+    # max_curv = -100000
+
+    # for e in xrange(enum):
+      # try:
+        # t = df.get_edge_curvature(e)
+        # ind_curv[e] = t
+        # tot_curv += t
+        # max_curv = max(max_curv, t)
+      # except ValueError:
+        # pass
+
+    # ne = len(ind_curv)
+    # for r,(e,t) in zip(random(ne),ind_curv.iteritems()):
+
+      # if r<t/max_curv*prob_spawn:
+      # #if t>2*limit or r<t/max_curv:
+      # #if r<sqrt(t):
+      # #if True:
+        # try:
+          # df.split_edge(e, minimum_length=limit)
+        # except ValueError:
+          # pass
+
   def step(self, t=None):
 
     import pycuda.driver as drv
