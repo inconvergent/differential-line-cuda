@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+from __future__ import division
 
 
 from numpy import pi
 from numpy import zeros
 from numpy import sin
 from numpy import cos
-from numpy import mean
-from numpy.linalg import norm
 from numpy.random import random
 
 from numpy import float32 as npfloat
 from numpy import int32 as npint
-# from numpy import bool as npbool
 
 
 TWOPI = pi*2
 PI = pi
-HPI = pi*0.5
-
 
 
 
@@ -146,7 +142,6 @@ class DifferentialLine(object):
       b = links[2*i+1,0]
 
       l = link_len[2*i+1,0]
-      # ln = norm(xy[i,:]-xy[b,:])
       if l>limit:
 
         newxy = (xy[b,:]+xy[i,:])*0.5
