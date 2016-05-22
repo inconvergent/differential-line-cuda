@@ -78,7 +78,7 @@ def main():
   }
 
   threads = 256
-  zone_leap = 2000
+  zone_leap = 10000
 
   render_steps = 10
   export_steps = 200
@@ -91,13 +91,13 @@ def main():
 
   stp = one*0.5
   spring_stp = 1.0
-  reject_stp = 1.0
+  reject_stp = 2.0
 
-  spawn_limit = 1.0*one
+  spawn_limit = 1.5*one
   spawn_prob = 0.3
 
   near_rad = one
-  far_rad = 40.*one
+  far_rad = 30.*one
 
   DL = DifferentialLine(
     size,

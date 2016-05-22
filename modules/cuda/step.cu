@@ -44,7 +44,6 @@ __global__ void step(
   int cand_count = 0;
   int total_count = 0;
 
-  int proximity[PROX];
   tmp[i] = 0.0f;
 
   for (int a=max(zi-1,0);a<min(zi+2,nz);a++){
@@ -65,26 +64,12 @@ __global__ void step(
         dd = sqrt(dx*dx+dy*dy);
 
         if (dd<far_rad && dd>0.0f){
-          proximity[cand_count] = j;
           cand_count += 1;
+          force = (far_rad/dd-1.0);
+          sx += force*dx*reject_stp;
+          sy += force*dy*reject_stp;
         }
       }
-    }
-  }
-
-  for (int k=0;k<cand_count;k++){
-
-    j = proximity[k];
-    jj = 2*j;
-
-    dx = xy[ii] - xy[jj];
-    dy = xy[ii+1] - xy[jj+1];
-    dd = sqrt(dx*dx + dy*dy);
-
-    if (dd>0.0f){
-      force = (far_rad/dd-1.0);
-      sx += force*dx*reject_stp;
-      sy += force*dy*reject_stp;
     }
   }
 
