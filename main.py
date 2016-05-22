@@ -20,7 +20,8 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
   def wrap(render):
 
     dl.step()
-    dl.spawn(limit=limit, prob=prob)
+    dl.spawn_curl(limit=limit, prob=prob)
+    # dl.spawn_normal(limit=limit, prob=prob)
 
     if dl.itt % render_steps == 0:
 
@@ -29,20 +30,20 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       num = dl.num
 
       render.clear_canvas()
-      render.set_line_width(2*dl.one)
+      render.set_line_width(dl.one)
 
       xy = dl.xy[:num,:]
       links = dl.links[:2*num,0]
 
       render.ctx.set_source_rgba(*colors['front'])
 
-      # for x,y in xy:
-        # render.circle(x, y, dl.one*2, fill=True)
+      for x,y in xy:
+        render.circle(x, y, dl.one*3, fill=True)
 
-      for i in xrange(num):
-        # a = links[2*i]
-        b = links[2*i+1]
-        render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
+      # for i in xrange(num):
+        # # a = links[2*i]
+        # b = links[2*i+1]
+        # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
 
     if dl.itt % export_steps == 0:
 
@@ -63,7 +64,7 @@ def main():
 
   colors = {
     'back': [1,1,1,1],
-    'front': [0,0,0,0.7],
+    'front': [0,0,0,0.6],
     'cyan': [0,0.6,0.6,0.6],
     'light': [0,0,0,0.2],
   }
@@ -73,21 +74,21 @@ def main():
   render_steps = 100
   export_steps = 100
 
-  size = 1024*4
+  size = 1024
   one = 1.0/size
 
-  init_num = 40
+  init_num = 30
   init_rad = 0.01
 
-  stp = one*0.5
+  stp = one*0.4
   spring_stp = 1.0
-  reject_stp = 10.0
+  reject_stp = 1.0
 
-  near_rad = one*1.3
-  far_rad = 50.*one
+  near_rad = one*3
+  far_rad = 30.*one
 
-  spawn_limit = near_rad*2.
-  spawn_prob = 0.14
+  spawn_limit = near_rad
+  spawn_prob = 0.9
 
   DL = DifferentialLine(
     size,

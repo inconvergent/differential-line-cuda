@@ -46,6 +46,7 @@ __global__ void step(
 
   tmp[i] = 0.0f;
 
+  // unlinked
   for (int a=max(zi-1,0);a<min(zi+2,nz);a++){
     for (int b=max(zj-1,0);b<min(zj+2,nz);b++){
       zk = a*nz+b;
@@ -73,6 +74,7 @@ __global__ void step(
     }
   }
 
+  // linked
   for (int k=0;k<2;k++){
     j = links[ii+k];
     dx = xy[ii] - xy[2*j];
@@ -86,8 +88,26 @@ __global__ void step(
     }
   }
 
+  // curl
+
+
+  float ax = xy[ii] - xy[2*links[ii]];
+  float ay = xy[ii+1] - xy[2*links[ii]+1];
+  dd = sqrt(ax*ax+ay*ay);
+  ax/=dd;
+  ay/=dd;
+
+  float bx = xy[ii] - xy[2*links[ii+1]];
+  float by = xy[ii+1] - xy[2*links[ii+1]+1];
+  dd = sqrt(bx*bx+by*by);
+  bx/=dd;
+  by/=dd;
+
+  link_curv[ii+1] = abs(ax*bx + ay*by);
+
   dxy[ii] = sx*stp;
   dxy[ii+1] = sy*stp;
+
   tmp[i] = (float)cand_count;
 
 }

@@ -8,6 +8,7 @@ from numpy import pi
 from numpy import zeros
 from numpy import sin
 from numpy import cos
+from numpy import sqrt
 from numpy.random import random
 
 from numpy import float32 as npfloat
@@ -125,7 +126,7 @@ class DifferentialLine(object):
 
     self.num = num+n
 
-  def spawn(self, limit, prob=0.01, t=None):
+  def spawn_normal(self, limit, prob=0.01, t=None):
 
     links = self.links
     link_len = self.link_len
@@ -154,37 +155,31 @@ class DifferentialLine(object):
         links[2*b] = num
         num += 1
 
-    # for i in xrange(self.num):
-      # print(i, links[2*i: 2*i+2].flatten(), link_len[2*i: 2*i+2].flatten())
-
     self.num = num
 
-  # def spawn_curl(df, limit, prob=1.0):
+  def spawn_curl(self, limit, prob=0.01, t=None):
 
-    # ind_curv = {}
-    # tot_curv = 0
-    # max_curv = -100000
+    links = self.links
+    link_len = self.link_len
+    xy = self.xy
+    num = self.num
 
-    # for e in xrange(enum):
-      # try:
-        # t = df.get_edge_curvature(e)
-        # ind_curv[e] = t
-        # tot_curv += t
-        # max_curv = max(max_curv, t)
-      # except ValueError:
-        # pass
+    for i, (r, t) in enumerate(zip(random(num), self.link_curv[1::2, 0])):
 
-    # ne = len(ind_curv)
-    # for r,(e,t) in zip(random(ne),ind_curv.iteritems()):
+      b = links[2*i+1,0]
 
-      # if r<t/max_curv*prob_spawn:
-      # #if t>2*limit or r<t/max_curv:
-      # #if r<sqrt(t):
-      # #if True:
-        # try:
-          # df.split_edge(e, minimum_length=limit)
-        # except ValueError:
-          # pass
+      if r>sqrt(t) and link_len[2*i+1,0]>limit:
+
+        newxy = (xy[b,:]+xy[i,:])*0.5
+        xy[num,:] = newxy
+
+        links[2*i+1] = num
+        links[2*num] = i
+        links[2*num+1] = b
+        links[2*b] = num
+        num += 1
+
+    self.num = num
 
   def step(self, t=None):
 
