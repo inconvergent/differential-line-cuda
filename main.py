@@ -78,12 +78,12 @@ def main():
   }
 
   threads = 256
-  zone_leap = 1000
+  zone_leap = 2000
 
   render_steps = 10
   export_steps = 200
 
-  size = 1200
+  size = 1024
   one = 1.0/size
 
   init_num = 40
@@ -97,7 +97,7 @@ def main():
   spawn_prob = 0.3
 
   near_rad = one
-  far_rad = 20.*one
+  far_rad = 40.*one
 
   DL = DifferentialLine(
     size,

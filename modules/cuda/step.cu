@@ -103,7 +103,7 @@ __global__ void step(
 
   dxy[ii] = sx*stp;
   dxy[ii+1] = sy*stp;
-  /*tmp[i] = (float)cand_count;*/
+  tmp[i] = (float)cand_count;
 
 }
 

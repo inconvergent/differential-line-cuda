@@ -60,7 +60,6 @@ class DifferentialLine(object):
     self.num = 0
 
     nz = int(1.0/(2*self.far_rad))
-    # nz = int(10)
 
     self.nz = nz
     self.nz2 = nz**2
@@ -214,8 +213,8 @@ class DifferentialLine(object):
     if t:
       t.t('kern2')
 
-    # print(mean(dxy[:num,:], axis=0))
-    # print(tmp[:num].flatten())
+    print(mean(dxy[:num,:], axis=0))
+    print(tmp[:num].flatten().max())
 
     xy[:num,:] += dxy[:num,:]
 
