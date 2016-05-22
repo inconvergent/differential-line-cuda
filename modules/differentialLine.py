@@ -34,7 +34,6 @@ class DifferentialLine(object):
       near_rad,
       far_rad,
       threads = 256,
-      zone_leap = 200,
       nmax = 1000000
     ):
 
@@ -48,7 +47,6 @@ class DifferentialLine(object):
     self.stp = stp
     self.spring_stp = spring_stp
     self.reject_stp = reject_stp
-    self.zone_leap = zone_leap
     self.near_rad = near_rad
     self.far_rad = far_rad
 
@@ -71,13 +69,21 @@ class DifferentialLine(object):
     self.link_len = zeros((2*nmax, 1), npfloat)
     self.links = zeros((2*nmax, 1), npint)
 
+    zone_map_size = self.nz2*64
+    self.zone_node = zeros(zone_map_size, npint)
+
     self.zone_num = zeros(self.nz2, npint)
-    self.zone_node = zeros(self.nz2*self.zone_leap, npint)
 
   def __cuda_init(self):
 
     import pycuda.autoinit
     from helpers import load_kernel
+
+    self.cuda_agg_count = load_kernel(
+      'modules/cuda/agg_count.cu',
+      'agg_count',
+      subs={'_THREADS_': self.threads}
+    )
 
     self.cuda_agg = load_kernel(
       'modules/cuda/agg.cu',
@@ -88,8 +94,7 @@ class DifferentialLine(object):
       'modules/cuda/step.cu',
       'step',
       subs={
-        '_THREADS_': self.threads,
-        '_PROX_': self.zone_leap
+        '_THREADS_': self.threads
       }
     )
 
@@ -173,13 +178,28 @@ class DifferentialLine(object):
 
     self.zone_num[:] = 0
 
-    if t:
-      t.t('ini')
+    self.cuda_agg_count(
+      npint(num),
+      npint(self.nz),
+      drv.In(xy[:num,:]),
+      drv.InOut(self.zone_num),
+      block=(self.threads,1,1),
+      grid=(blocks,1)
+    )
+
+    zone_leap = self.zone_num[:].max()
+    zone_map_size = self.nz2*zone_leap
+
+    if zone_map_size>len(self.zone_node):
+      print('resize, new zone leap: ', zone_map_size*2./self.nz2)
+      self.zone_node = zeros(zone_map_size*2, npint)
+
+    self.zone_num[:] = 0
 
     self.cuda_agg(
       npint(num),
       npint(self.nz),
-      npint(self.zone_leap),
+      npint(zone_leap),
       drv.In(xy[:num,:]),
       drv.InOut(self.zone_num),
       drv.InOut(self.zone_node),
@@ -187,13 +207,10 @@ class DifferentialLine(object):
       grid=(blocks,1)
     )
 
-    if t:
-      t.t('kern1')
-
     self.cuda_step(
       npint(num),
       npint(self.nz),
-      npint(self.zone_leap),
+      npint(zone_leap),
       drv.In(xy[:num,:]),
       drv.Out(dxy[:num,:]),
       drv.Out(tmp[:num,:]),
@@ -210,13 +227,5 @@ class DifferentialLine(object):
       grid=(blocks,1)
     )
 
-    if t:
-      t.t('kern2')
-
-    assert tmp[:num].flatten().max()<self.zone_leap
-
     xy[:num,:] += dxy[:num,:]
-
-    if t:
-      t.t('inc')
 

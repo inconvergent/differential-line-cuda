@@ -1,5 +1,4 @@
 #define THREADS _THREADS_
-#define PROX _PROX_
 
 __global__ void step(
   int n,

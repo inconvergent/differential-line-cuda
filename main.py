@@ -79,7 +79,6 @@ def main():
   }
 
   threads = 256
-  zone_leap = 10000
 
   render_steps = 10
   export_steps = 50
@@ -107,8 +106,7 @@ def main():
     reject_stp,
     near_rad,
     far_rad,
-    threads = threads,
-    zone_leap = zone_leap
+    threads = threads
   )
 
   DL.init_circle(init_num, init_rad)
