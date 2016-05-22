@@ -82,9 +82,9 @@ def main():
   zone_leap = 10000
 
   render_steps = 10
-  export_steps = 200
+  export_steps = 50
 
-  size = 1500
+  size = 800
   one = 1.0/size
 
   init_num = 40

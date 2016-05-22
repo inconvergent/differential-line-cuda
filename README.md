@@ -1,7 +1,8 @@
-# Differential Line
+# Differential Line CUDA
 
+![img](/img/img.png?raw=true "img")
 
-<!--![ani](/img/ani.gif?raw=true "ani")-->
+Cuda implementation of https://github.com/inconvergent/differential-line.
 
 ## Prerequisites
 
