@@ -83,7 +83,7 @@ def main():
   render_steps = 10
   export_steps = 50
 
-  size = 800
+  size = 1024
   one = 1.0/size
 
   init_num = 40
