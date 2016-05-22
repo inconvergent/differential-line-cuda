@@ -59,8 +59,8 @@ class DifferentialLine(object):
 
     self.num = 0
 
-    # nz = int(1.0/(2*self.far_rad))
-    nz = int(1)
+    nz = int(1.0/(2*self.far_rad))
+    # nz = int(10)
 
     self.nz = nz
     self.nz2 = nz**2
