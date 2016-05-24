@@ -38,21 +38,21 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       render.ctx.set_source_rgba(*colors['front'])
 
       ## dots
-      for x,y in xy:
-        render.circle(x, y, dl.one, fill=True)
+      # for x,y in xy:
+        # render.circle(x, y, dl.one, fill=True)
 
       ## edges
-      for i in xrange(num):
-        b = links[i,1]
-        render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
+      # for i in xrange(num):
+        # b = links[i,1]
+        # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
 
       ## connected edges
-      # ov = link_sort(links)
-      # remapped = xy[ov,:]
-      # render.ctx.move_to(remapped[0,0], remapped[0,1])
-      # for x in remapped[:,:]:
-        # render.ctx.line_to(x[0], x[1])
-      # render.ctx.fill()
+      ov = link_sort(links)
+      remapped = xy[ov,:]
+      render.ctx.move_to(remapped[0,0], remapped[0,1])
+      for x in remapped[:,:]:
+        render.ctx.line_to(x[0], x[1])
+      render.ctx.fill()
 
     if dl.itt % export_steps == 0:
 
@@ -80,18 +80,18 @@ def main():
 
   threads = 512
 
-  render_steps = 3
-  export_steps = 3
+  render_steps = 1000
+  export_steps = 1000
 
-  size = 512
+  size = 512*2
   one = 1.0/size
 
-  init_num = 200
-  init_rad = 0.25
+  init_num = 20
+  init_rad = 0.001
 
   stp = one*0.4
   spring_stp = 1.0
-  reject_stp = 1.0
+  reject_stp = 13.0
 
   near_rad = one*3
   far_rad = 30.*one

@@ -46,6 +46,8 @@ __global__ void step(
 
   tmp[i] = 0.0f;
 
+  float count = 0.0f;
+
   // unlinked
   for (int a=max(zi-1,0);a<min(zi+2,nz);a++){
     for (int b=max(zj-1,0);b<min(zj+2,nz);b++){
@@ -69,10 +71,15 @@ __global__ void step(
           force = (far_rad/dd-1.0);
           sx += force*dx*reject_stp;
           sy += force*dy*reject_stp;
+          count += 1.0f;
         }
       }
     }
   }
+
+  // normalize rejection force
+  sx /= count;
+  sy /= count;
 
   // linked
   for (int k=0;k<2;k++){
