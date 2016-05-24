@@ -63,9 +63,9 @@ class DifferentialLine(object):
     self.xy = zeros((nmax, 2), npfloat)
     self.dxy = zeros((nmax, 2), npfloat)
     self.tmp = zeros((nmax, 1), npfloat)
-    self.link_len = zeros((2*nmax, 1), npfloat)
-    self.link_curv = zeros((2*nmax, 1), npfloat)
-    self.links = zeros((2*nmax, 1), npint)
+    self.link_len = zeros((nmax, 2), npfloat)
+    self.link_curv = zeros((nmax, 2), npfloat)
+    self.links = zeros((nmax, 2), npint)
 
     zone_map_size = self.nz2*64
     self.zone_node = zeros(zone_map_size, npint)
@@ -113,16 +113,13 @@ class DifferentialLine(object):
     self.xy[num:num+n, 1] = yy
 
     for i in xrange(num+1, num+n-1):
-      links[2*i] = i-1
-      links[2*i+1] = i+1
+      links[i,0] = i-1
+      links[i,1] = i+1
 
-    links[2*num+1] = num+1
-    links[2*num] = num+n-1
-    links[2*(num+n-1)+1] = num
-    links[2*(num+n-1)] = num+n-2
-
-    # for i in xrange(num, num+n):
-      # print(i, links[2*i: 2*i+2].flatten())
+    links[num,1] = num+1
+    links[num,0] = num+n-1
+    links[(num+n-1),1] = num
+    links[(num+n-1),0] = num+n-2
 
     self.num = num+n
 
@@ -139,19 +136,18 @@ class DifferentialLine(object):
       return
 
     for i in mask:
-      # a = links[2*i]
-      b = links[2*i+1,0]
+      b = links[i,1]
 
-      l = link_len[2*i+1,0]
+      l = link_len[i,1]
       if l>limit:
 
         newxy = (xy[b,:]+xy[i,:])*0.5
         xy[num,:] = newxy
 
-        links[2*i+1] = num
-        links[2*num] = i
-        links[2*num+1] = b
-        links[2*b] = num
+        links[i,1] = num
+        links[num,0] = i
+        links[num,1] = b
+        links[b,0] = num
         num += 1
 
     self.num = num
@@ -163,20 +159,20 @@ class DifferentialLine(object):
     xy = self.xy
     num = self.num
 
-    curve = sqrt(self.link_curv[1:2*num:2,0])
+    curve = sqrt(self.link_curv[1:num,0])
     for i, (r, t) in enumerate(zip(random(num), curve)):
 
-      b = links[2*i+1,0]
+      b = links[i,1]
 
-      if r>t and link_len[2*i+1,0]>limit:
+      if r>t and link_len[i,1]>limit:
 
         newxy = (xy[b,:]+xy[i,:])*0.5
         xy[num,:] = newxy
 
-        links[2*i+1] = num
-        links[2*num] = i
-        links[2*num+1] = b
-        links[2*b] = num
+        links[i,1] = num
+        links[num,0] = i
+        links[num,1] = b
+        links[b,0] = num
         num += 1
 
     self.num = num
@@ -233,9 +229,9 @@ class DifferentialLine(object):
       drv.In(xy[:num,:]),
       drv.Out(dxy[:num,:]),
       drv.Out(tmp[:num,:]),
-      drv.Out(link_len[:num*2,:]),
-      drv.Out(link_curv[:num*2,:]),
-      drv.In(self.links[:num*2,:]),
+      drv.Out(link_len[:num,:]),
+      drv.Out(link_curv[:num,:]),
+      drv.In(self.links[:num,:]),
       drv.In(self.zone_num),
       drv.In(self.zone_node),
       npfloat(self.stp),

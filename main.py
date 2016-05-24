@@ -20,8 +20,8 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
   def wrap(render):
 
     dl.step()
-    # dl.spawn_curl(limit=limit, prob=prob)
-    dl.spawn_normal(limit=limit, prob=prob)
+    dl.spawn_curl(limit=limit, prob=prob)
+    # dl.spawn_normal(limit=limit, prob=prob)
 
     if dl.itt % render_steps == 0:
 
@@ -33,27 +33,26 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       render.set_line_width(dl.one)
 
       xy = dl.xy[:num,:]
-      links = dl.links[:2*num,0]
+      links = dl.links[:num,:]
 
       render.ctx.set_source_rgba(*colors['front'])
 
       ## dots
-      # for x,y in xy:
-        # render.circle(x, y, dl.one, fill=True)
+      for x,y in xy:
+        render.circle(x, y, dl.one, fill=True)
 
       ## edges
-      # for i in xrange(num):
-        # # a = links[2*i]
-        # b = links[2*i+1]
-        # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
+      for i in xrange(num):
+        b = links[i,1]
+        render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
 
       ## connected edges
-      ov = link_sort(links)
-      remapped = xy[ov,:]
-      render.ctx.move_to(remapped[0,0], remapped[0,1])
-      for x in remapped[:,:]:
-        render.ctx.line_to(x[0], x[1])
-      render.ctx.fill()
+      # ov = link_sort(links)
+      # remapped = xy[ov,:]
+      # render.ctx.move_to(remapped[0,0], remapped[0,1])
+      # for x in remapped[:,:]:
+        # render.ctx.line_to(x[0], x[1])
+      # render.ctx.fill()
 
     if dl.itt % export_steps == 0:
 

@@ -19,14 +19,14 @@ def load_kernel(fn, name, subs={}):
 
 def link_sort(links):
 
-  curr = links[0]
+  curr = links[0,0]
   first = curr
   order = [first]
 
   while True:
 
-    a = links[curr*2]
-    b = links[curr*2+1]
+    a = links[curr,0]
+    b = links[curr,1]
 
     if a != curr:
       curr = a
