@@ -133,8 +133,7 @@ class DifferentialLine(object):
     xy = self.xy
     num = self.num
 
-    rnd = random(num)
-    mask = (rnd<prob).nonzero()[0]
+    mask = (random(num)<prob).nonzero()[0]
 
     if len(mask)<1:
       return

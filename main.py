@@ -6,11 +6,11 @@ from __future__ import print_function
 from __future__ import division
 
 
-
 def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
   from fn import Fn
   from time import time
+  from modules.helpers import link_sort
   # from dddUtils.ioOBJ import export_2d as export
 
   t0 = time()
@@ -20,8 +20,8 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
   def wrap(render):
 
     dl.step()
-    dl.spawn_curl(limit=limit, prob=prob)
-    # dl.spawn_normal(limit=limit, prob=prob)
+    # dl.spawn_curl(limit=limit, prob=prob)
+    dl.spawn_normal(limit=limit, prob=prob)
 
     if dl.itt % render_steps == 0:
 
@@ -37,13 +37,23 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
       render.ctx.set_source_rgba(*colors['front'])
 
-      for x,y in xy:
-        render.circle(x, y, dl.one, fill=True)
+      ## dots
+      # for x,y in xy:
+        # render.circle(x, y, dl.one, fill=True)
 
+      ## edges
       # for i in xrange(num):
         # # a = links[2*i]
         # b = links[2*i+1]
         # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
+
+      ## connected edges
+      ov = link_sort(links)
+      remapped = xy[ov,:]
+      render.ctx.move_to(remapped[0,0], remapped[0,1])
+      for x in remapped[:,:]:
+        render.ctx.line_to(x[0], x[1])
+      render.ctx.fill()
 
     if dl.itt % export_steps == 0:
 
@@ -71,14 +81,14 @@ def main():
 
   threads = 512
 
-  render_steps = 100
-  export_steps = 100
+  render_steps = 3
+  export_steps = 3
 
-  size = 1024
+  size = 512
   one = 1.0/size
 
-  init_num = 30
-  init_rad = 0.01
+  init_num = 200
+  init_rad = 0.25
 
   stp = one*0.4
   spring_stp = 1.0
@@ -88,7 +98,7 @@ def main():
   far_rad = 30.*one
 
   spawn_limit = near_rad
-  spawn_prob = 0.9
+  spawn_prob = 0.1
 
   DL = DifferentialLine(
     size,
