@@ -10,8 +10,7 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
   from fn import Fn
   from time import time
-  from modules.helpers import link_sort
-  # from dddUtils.ioOBJ import export_2d as export
+  from dddUtils.ioOBJ import export_2d as export
 
   t0 = time()
 
@@ -33,7 +32,8 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       render.set_line_width(dl.one)
 
       xy = dl.xy[:num,:]
-      links = dl.links[:num,:]
+      # links = dl.links[:num,:]
+      line = dl.get_line()
 
       render.ctx.set_source_rgba(*colors['front'])
 
@@ -47,8 +47,7 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
         # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
 
       ## connected edges
-      ov = link_sort(links)
-      remapped = xy[ov,:]
+      remapped = xy[line,:]
       render.ctx.move_to(remapped[0,0], remapped[0,1])
       for x in remapped[:,:]:
         render.ctx.line_to(x[0], x[1])
@@ -58,7 +57,7 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
       name = fn.name()
       render.write_to_png(name+'.png')
-      # export('lattice', name+'.2obj', vertices, edges=edges)
+      export('differential-line-cuda', name+'.2obj', xy, lines=[line])
 
     return True
 
@@ -80,8 +79,8 @@ def main():
 
   threads = 512
 
-  render_steps = 1000
-  export_steps = 1000
+  render_steps = 10
+  export_steps = 100
 
   size = 512*2
   one = 1.0/size

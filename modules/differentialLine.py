@@ -177,6 +177,34 @@ class DifferentialLine(object):
 
     self.num = num
 
+  def get_line(self):
+
+    from numpy import array
+
+    links = self.links
+
+    curr = links[0,0]
+    first = curr
+    order = [first]
+
+    while True:
+
+      a = links[curr,0]
+      b = links[curr,1]
+
+      if a != curr:
+        curr = a
+      else:
+        curr = b
+
+      order.append(curr)
+
+      if curr == first:
+        order.append(a)
+        break
+
+    return array(order, npint)
+
   def step(self, t=None):
 
     import pycuda.driver as drv

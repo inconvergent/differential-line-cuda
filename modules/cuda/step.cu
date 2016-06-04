@@ -1,22 +1,22 @@
 #define THREADS _THREADS_
 
 __global__ void step(
-  int n,
-  int nz,
-  int zone_leap,
-  float *xy,
+  const int n,
+  const int nz,
+  const int zone_leap,
+  const float *xy,
   float *dxy,
   float *tmp,
   float *link_len,
   float *link_curv,
-  int *links,
-  int *zone_num,
-  int *zone_node,
-  float stp,
-  float reject_stp,
-  float spring_stp,
-  float near_rad,
-  float far_rad
+  const int *links,
+  const int *zone_num,
+  const int *zone_node,
+  const float stp,
+  const float reject_stp,
+  const float spring_stp,
+  const float near_rad,
+  const float far_rad
 ){
   const int i = blockIdx.x*THREADS + threadIdx.x;
 
