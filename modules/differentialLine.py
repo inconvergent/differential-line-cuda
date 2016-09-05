@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import division
+
+
 
 
 from numpy import pi
@@ -75,7 +75,7 @@ class DifferentialLine(object):
   def __cuda_init(self):
 
     import pycuda.autoinit
-    from helpers import load_kernel
+    from .helpers import load_kernel
 
     self.cuda_agg_count = load_kernel(
       'modules/cuda/agg_count.cu',
@@ -112,7 +112,7 @@ class DifferentialLine(object):
     self.xy[num:num+n, 0] = xx
     self.xy[num:num+n, 1] = yy
 
-    for i in xrange(num+1, num+n-1):
+    for i in range(num+1, num+n-1):
       links[i,0] = i-1
       links[i,1] = i+1
 

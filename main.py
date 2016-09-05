@@ -1,16 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import print_function
-from __future__ import division
 
 
 def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 
   from fn import Fn
   from time import time
-  from dddUtils.ioOBJ import export_2d as export
+  # from iutils.ioOBJ import export_2d as export
 
   t0 = time()
 
@@ -29,11 +26,11 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
       num = dl.num
 
       render.clear_canvas()
-      render.set_line_width(dl.one)
+      render.set_line_width(2*dl.one)
 
       xy = dl.xy[:num,:]
-      # links = dl.links[:num,:]
-      line = dl.get_line()
+      links = dl.links[:num,:]
+      # line = dl.get_line()
 
       render.ctx.set_source_rgba(*colors['front'])
 
@@ -42,22 +39,22 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
         # render.circle(x, y, dl.one, fill=True)
 
       ## edges
-      # for i in xrange(num):
-        # b = links[i,1]
-        # render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
+      for i in range(num):
+        b = links[i,1]
+        render.line(xy[i,0], xy[i,1], xy[b,0], xy[b,1])
 
       ## connected edges
-      remapped = xy[line,:]
-      render.ctx.move_to(remapped[0,0], remapped[0,1])
-      for x in remapped[:,:]:
-        render.ctx.line_to(x[0], x[1])
-      render.ctx.fill()
+      # remapped = xy[line,:]
+      # render.ctx.move_to(remapped[0,0], remapped[0,1])
+      # for x in remapped[:,:]:
+      #   render.ctx.line_to(x[0], x[1])
+      # render.ctx.fill()
 
     if dl.itt % export_steps == 0:
 
       name = fn.name()
       render.write_to_png(name+'.png')
-      export('differential-line-cuda', name+'.2obj', xy, lines=[line])
+      # export('differential-line-cuda', name+'.2obj', xy, lines=[line])
 
     return True
 
@@ -68,21 +65,21 @@ def get_wrap(dl, colors, limit, prob, render_steps=10, export_steps=10):
 def main():
 
   from modules.differentialLine import DifferentialLine
-  from render.render import Animate
+  from iutils.render import Animate
 
   colors = {
-    'back': [1,1,1,1],
-    'front': [0,0,0,0.6],
-    'cyan': [0,0.6,0.6,0.6],
-    'light': [0,0,0,0.2],
-  }
+      'back': [1,1,1,1],
+      'front': [0,0,0,0.6],
+      'cyan': [0,0.6,0.6,0.6],
+      'light': [0,0,0,0.2],
+      }
 
   threads = 512
 
   render_steps = 10
-  export_steps = 100
+  export_steps = 14
 
-  size = 512*2
+  size = 512
   one = 1.0/size
 
   init_num = 20
@@ -99,25 +96,25 @@ def main():
   spawn_prob = 0.1
 
   DL = DifferentialLine(
-    size,
-    stp,
-    spring_stp,
-    reject_stp,
-    near_rad,
-    far_rad,
-    threads = threads
-  )
+      size,
+      stp,
+      spring_stp,
+      reject_stp,
+      near_rad,
+      far_rad,
+      threads = threads
+      )
 
   DL.init_circle(init_num, init_rad)
 
   wrap = get_wrap(
-    DL,
-    colors,
-    spawn_limit,
-    spawn_prob,
-    export_steps=export_steps,
-    render_steps=render_steps
-  )
+      DL,
+      colors,
+      spawn_limit,
+      spawn_prob,
+      export_steps=export_steps,
+      render_steps=render_steps
+      )
 
   render = Animate(size, colors['back'], colors['front'], wrap)
   render.start()
